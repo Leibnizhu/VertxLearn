@@ -1,4 +1,5 @@
 target/
+.vertx/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
