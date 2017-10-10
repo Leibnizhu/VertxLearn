@@ -4,6 +4,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 
 /**
  * @author Leibniz.Hu
@@ -19,6 +20,7 @@ public class RouterSubRouterTest {
     private static void server8080(Vertx vertx) {
         HttpServer server = vertx.createHttpServer();
         Router mainRouter = Router.router(vertx);
+        mainRouter.route().handler(BodyHandler.create().setBodyLimit(15));
         // 处理静态资源
         mainRouter.route("/static/*").handler(ctx -> {
             ctx.response().end("my Static Handler");
@@ -34,8 +36,9 @@ public class RouterSubRouterTest {
             rc.response().end("You got product which id = " + prodId);
         });
         restAPI.put("/prod/:productID").handler(rc -> {
+            String title = rc.getBodyAsJson().getString("title");
             String prodId = rc.request().getParam("productID");
-            rc.response().end("You put a product which id = " + prodId);
+            rc.response().end("You put a product which id = " + prodId + " and its title is " + title);
         });
         restAPI.delete("/prod/:productID").handler(rc -> {
             String prodId = rc.request().getParam("productID");
