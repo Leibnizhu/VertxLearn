@@ -67,7 +67,7 @@ public class JwtAuthTest {
         //每一个被静态资源处理器处理的请求都会返回文件系统的某个目录或 classpath 里的文件。文件的根目录是可以配置的，默认为 webroot。
         //当 Vert.x 在 classpath 中第一次找到一个资源时，会将它提取到一个磁盘的缓存目录中以避免每一次都重新提取。
         //所有访问根路径 / 的请求会被定位到索引页。默认的该文件为 233.html。可以通过 setIndexPage 方法来设置。
-        router.route("/static/*").handler(StaticHandler.create().setIndexPage("233.html"));
+        router.route("/static/*").handler(StaticHandler.create().setWebRoot("static").setIndexPage("233.html"));
         server.requestHandler(router::accept).listen(8080);
     }
 }
