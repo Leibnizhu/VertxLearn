@@ -1,4 +1,4 @@
-package io.leibnizhu.vertxtest;
+package io.gitlab.leibnizhu.vertxtest;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;

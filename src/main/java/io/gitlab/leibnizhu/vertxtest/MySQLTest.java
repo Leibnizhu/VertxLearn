@@ -1,4 +1,4 @@
-package io.leibnizhu.vertxtest;
+package io.gitlab.leibnizhu.vertxtest;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;

@@ -1,4 +1,4 @@
-package io.leibnizhu.vertxtest;
+package io.gitlab.leibnizhu.vertxtest;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
