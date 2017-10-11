@@ -1,7 +1,6 @@
 package io.gitlab.leibnizhu.vertxtest;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import com.mysql.jdbc.Driver;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
@@ -12,22 +11,26 @@ import io.vertx.ext.sql.ResultSet;
 import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.web.Router;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 /**
  * @author Leibniz.Hu
  * Created on 2017-10-11 11:56.
  */
 public class HikariCPTest extends AbstractVerticle {
 
-    public static void main(String[] args) throws ClassNotFoundException {
+    public static void main(String[] args) throws SQLException {
         Vertx vertx = Vertx.vertx();
-        Class.forName("com.mysql.jdbc.Driver");
+        DriverManager.registerDriver(new Driver());
         vertx.deployVerticle(HikariCPTest.class.getName(), new DeploymentOptions().setConfig(new JsonObject()
                 .put("provider_class", "io.vertx.ext.jdbc.spi.impl.HikariCPDataSourceProvider")
                 .put("jdbcUrl", "jdbc:mysql://192.168.1.235:3306/fission?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false")
                 .put("driverClassName", "com.mysql.jdbc.Driver")
                 .put("username", "root")
                 .put("password", "turingdi")
-                .put("maximumPoolSize", 30)));
+                .put("minimumIdle", 2)
+                .put("maximumPoolSize", 10)));
     }
 
     @Override
@@ -40,7 +43,7 @@ public class HikariCPTest extends AbstractVerticle {
             client.getConnection(res -> {
                 if (res.succeeded()) {
                     SQLConnection conn = res.result();// 获得一个连接
-                    conn.query("select * from campaign;", ar -> {
+                    conn.query("select * from vip_spread;", ar -> {
                         if (ar.succeeded()) {
                             ResultSet rs = ar.result();
                             rc.response().end(rs.getResults().toString(), "UTF-8");
@@ -55,17 +58,5 @@ public class HikariCPTest extends AbstractVerticle {
             });
         });
         server.requestHandler(router::accept).listen(8080);
-    }
-
-    private HikariDataSource getHikariPoll() {
-        HikariConfig config = new HikariConfig("/hikari.properties");
-//        config.setJdbcUrl("jdbc:mysql://192.168.1.235:3306/fission?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false");
-//        config.setUsername("root");
-//        config.setPassword("turingdi");
-//        config.addDataSourceProperty("cachePrepStmts", "true");
-//        config.addDataSourceProperty("prepStmtCacheSize", "250");
-//        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        HikariDataSource ds = new HikariDataSource(config);
-        return ds;
     }
 }
