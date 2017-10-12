@@ -9,8 +9,6 @@ import io.vertx.ext.web.Router;
  * Created on 2017-10-12 09:38.
  */
 public class MultiVerticleTest {
-
-
     public static void main(String[] args) {
         Vertx vertx = Vertx.vertx();
         vertx.deployVerticle(new AbstractVerticle() {
@@ -22,18 +20,16 @@ public class MultiVerticleTest {
                 });
                 vertx.createHttpServer().requestHandler(router::accept).listen(8080);
             }
-        }, h -> {
-            vertx.deployVerticle(new AbstractVerticle() {
-                @Override
-                public void start() throws Exception {
-                    Router router = Router.router(vertx);
-                    router.route("/v2").handler(rc -> {
-                        rc.response().end("This is Verticle 2 !");
-                    });
-                    vertx.createHttpServer().requestHandler(router::accept).listen(8080);
-                }
-            });
         });
-
+        vertx.deployVerticle(new AbstractVerticle() {
+            @Override
+            public void start() throws Exception {
+                Router router = Router.router(vertx);
+                router.route("/v2").handler(rc -> {
+                    rc.response().end("This is Verticle 2 !");
+                });
+                vertx.createHttpServer().requestHandler(router::accept).listen(8080);
+            }
+        });
     }
 }
